@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import messagebox
 import random
+import pyperclip  # Para copiar en el portapapeles
 
 
 def generate_password():
@@ -18,10 +19,12 @@ def generate_password():
     lista_letras += [random.choice(numbers) for numeros in range(nr_numbers)]
     lista_letras += [random.choice(symbols) for simbolos in range(nr_symbols)]
 
-    random.shuffle(lista_letras)
-    password_final = "".join(lista_letras)
+    random.shuffle(lista_letras)  # Mezclamos la lista.
+    password_final = "".join(lista_letras)  # Unimos cada elemento de la lista sin espacios creando una cadena
 
     entry_password.insert(0, password_final)
+
+    pyperclip.copy(password_final)  # Copiamos la contraseña generada en el portapapeles.
 
 
 def save():
