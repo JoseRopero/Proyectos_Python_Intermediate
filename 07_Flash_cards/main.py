@@ -5,10 +5,16 @@ import random
 
 BACKGROUND_COLOR = "#B1DDC6"
 
-datos = pandas.read_csv("data/french_words.csv")
-df = pandas.DataFrame(datos)
-df_dic = df.to_dict(orient="records")
-random_dic = {}  # Creamos un diccionario vacio donde guardar la eleccion random y poder usarla en las dos funciones.
+try:
+    # Cargamos el csv con las palabras que nos quedan por aprender. Tenemos que capturar el error porque la primera vez
+    # que se ejecuta el programa este archivo no existe.
+    datos = pandas.read_csv("data/words_to_learn.csv")
+except FileNotFoundError:
+    datos = pandas.read_csv("data/french_words.csv")
+finally:
+    df = pandas.DataFrame(datos)
+    df_dic = df.to_dict(orient="records")  # Convertimos el DataFrame a diccionario.
+    random_dic = {}  # Creamos un diccionario vacio para guardar la eleccion random y poder usarla en las dos funciones.
 
 
 def random_word():
@@ -21,7 +27,15 @@ def random_word():
     tiempo_vuelta = windows.after(3000, func=voltear_card)
 
 
-def voltear_card():
+def is_know():  # Si pulsamos el botón verde, eliminamos la palabra del diccionario y guardamos en el csv nuevo
+    df_dic.remove(random_dic)
+    df_learn = pandas.DataFrame(df_dic)
+    df_learn.to_csv("data/words_to_learn.csv", index=False)
+    # Nueva carta
+    random_word()
+
+
+def voltear_card():  # Al voltear la carta cambiamos la imagen y traducción
     canvas.itemconfigure(front_img, image=card_back_img)
     canvas.itemconfigure(french_text, text="English", fill="white")
     canvas.itemconfigure(palabra_text, text=random_dic['English'], fill="white")
@@ -49,7 +63,7 @@ wrong_img = PhotoImage(file="images/wrong.png")
 button_wrong = Button(image=wrong_img, highlightthickness=0, command=random_word)
 button_wrong.grid(column=0, row=1)
 right_img = PhotoImage(file="images/right.png")
-button_right = Button(image=right_img, highlightthickness=0, command=random_word)
+button_right = Button(image=right_img, highlightthickness=0, command=is_know)
 button_right.grid(column=1, row=1)
 
 random_word()  # Para que al abrir el programa aparezca una palabra al azar.
