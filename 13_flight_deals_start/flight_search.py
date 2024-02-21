@@ -42,6 +42,7 @@ class FlightSearch:
 
         response = requests.get(url=f'{config.END_POINT_TEQUILA}/search', headers=header, params=query)
 
+        # Recogemos el error por si no hubiera vuelos entre las fechas indicadas.
         try:
             data = response.json()['data'][0]
 
@@ -59,5 +60,5 @@ class FlightSearch:
             return_date=data['route'][1]['aTime']
         )
 
-        print(f'{flight_data.destination_city}: {flight_data.price}')  # imprimimos el precio
+        print(f'{flight_data.destination_city}: {flight_data.price}')  # imprimimos el precio para una prueba.
         return flight_data
